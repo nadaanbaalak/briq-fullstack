@@ -1,16 +1,27 @@
 import React from "react";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
 
 function RatingStars(props) {
-  const { ratingsArray, handleRatingChange } = props;
+  const { ratingsArray, onRatingChange } = props;
 
   const ratingStarsArray = ratingsArray.map((value, index) => {
-    if (value === 1)
-      return <i className="fas fa-star" onClick={handleRatingChange(index)} />;
-    else if (value === 0)
-      return <i className="far fa-star" onClick={handleRatingChange(index)} />;
+    return value === 1 ? (
+      <StarFilled
+        key={index}
+        onClick={() => onRatingChange(index)}
+        twoToneColor="#FFFF00"
+      />
+    ) : (
+      <StarOutlined key={index} onClick={() => onRatingChange(index)} />
+    );
   });
 
   return ratingStarsArray;
 }
 
 export default RatingStars;
+
+/*
+else if (value === 0)
+  return <i className="far fa-star" onClick={onRatingChange(index)} />;
+*/
