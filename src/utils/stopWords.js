@@ -149,8 +149,8 @@ const defaultStopwords = [
   "wouldnt",
 ];
 
-const isStopword = (word) => {
+function isStopword(word) {
   return defaultStopwords.includes(word);
-};
+}
 
 export default isStopword;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Spin } from "antd";
+import { getSimilarQuote, getDifferentQuote } from "./utils/cosineSimilarity";
 import Quote from "./components/Quote";
 import RatingStars from "./components/RatingStars";
 
@@ -51,7 +52,7 @@ class App extends Component {
       (total, value) => total + value,
       0
     );
-
+    this.setState({ isLoading: true });
     if (currentRating === 0) currentRating = 1;
     const pastQuotes = JSON.parse(localStorage.getItem("previousQuotes")) || [];
     pastQuotes.push(this.state.quote["id"]);
@@ -67,7 +68,26 @@ class App extends Component {
       const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
       //console.log("Previous Quotes id array : ", previousQuotes);
       //console.log(inverseDocumentFrequency(quotes.data, {}, previousQuotes));
-      this.setState({ rating: [0, 0, 0, 0, 0] });
+      let nextQuote = {};
+      if (currentRating >= 4) {
+        nextQuote = getSimilarQuote(
+          this.state.quote,
+          quotes.data,
+          previousQuotes
+        );
+        console.log(nextQuote);
+      } else {
+        nextQuote = getDifferentQuote(
+          this.state.quote,
+          quotes.data,
+          previousQuotes
+        );
+      }
+      this.setState({
+        rating: [0, 0, 0, 0, 0],
+        quote: nextQuote,
+        isLoading: false,
+      });
     } catch (err) {
       console.log(err);
     }
