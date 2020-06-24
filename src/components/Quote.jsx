@@ -2,9 +2,9 @@ import React from "react";
 
 function Quote(props) {
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <h1>{`"${props.currentQuote.en}"`}</h1>
-      <h2>{props.currentQuote.author}</h2>
+      <p>{props.currentQuote.author}</p>
     </div>
   );
 }

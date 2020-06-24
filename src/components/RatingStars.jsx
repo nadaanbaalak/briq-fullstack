@@ -9,10 +9,14 @@ function RatingStars(props) {
       <StarFilled
         key={index}
         onClick={() => onRatingChange(index)}
-        twoToneColor="#FFFF00"
+        style={{ fontSize: "30px" }}
       />
     ) : (
-      <StarOutlined key={index} onClick={() => onRatingChange(index)} />
+      <StarOutlined
+        key={index}
+        onClick={() => onRatingChange(index)}
+        style={{ fontSize: "30px" }}
+      />
     );
   });
 
@@ -20,8 +24,3 @@ function RatingStars(props) {
 }
 
 export default RatingStars;
-
-/*
-else if (value === 0)
-  return <i className="far fa-star" onClick={onRatingChange(index)} />;
-*/
