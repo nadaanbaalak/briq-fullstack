@@ -88,26 +88,29 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        {this.state.isLoading ? (
-          <Spin size="large" />
-        ) : (
-          <>
-            <Quote currentQuote={this.state.quote} />
-            <div>
-              <RatingStars
-                ratingsArray={this.state.rating}
-                onRatingChange={this.handleRatingChange}
-              />
-            </div>
-            <button
-              className="btn btn-primary m-2"
-              onClick={this.handleRatingSubmit}
-            >
-              Rate
-            </button>
-          </>
-        )}
+      <div className="app">
+        <h1 className="pageTitle">UNRATED QUOTES</h1>
+        <div className="container">
+          {this.state.isLoading ? (
+            <Spin size="large" />
+          ) : (
+            <>
+              <Quote currentQuote={this.state.quote} />
+              <div>
+                <RatingStars
+                  ratingsArray={this.state.rating}
+                  onRatingChange={this.handleRatingChange}
+                />
+              </div>
+              <button
+                className="btn btn-primary m-3"
+                onClick={this.handleRatingSubmit}
+              >
+                Rate
+              </button>
+            </>
+          )}
+        </div>
       </div>
     );
   }

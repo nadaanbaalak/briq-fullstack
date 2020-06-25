@@ -82,7 +82,6 @@ function cosineSimilarity(quoteVectA, quoteVectB) {
 //function to get TF*IDF vector for a quote
 function tfMapToVector(idf, quote) {
   const { tfMap, wordCount } = termFrequencyMap(quote);
-  console.log(wordCount);
 
   const vector = [];
 
@@ -104,7 +103,6 @@ function getSimilarQuote(currentQuote, allQuotes, previousQuotes) {
   const quotesLeft = remainingQuotes(allQuotes, previousQuotes);
   const idf = inverseDocumentFrequency(quotesLeft);
   const currentQuoteVector = tfMapToVector(idf, currentQuote.en);
-  console.log("Current quote Vector : ", currentQuoteVector);
 
   let mostSimilarQuote = {};
   let mostSimilarQuoteSimilarity = 0;

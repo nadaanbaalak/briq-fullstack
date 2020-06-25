@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Holtwood+One+SC&display=swap");
 .container {
   display: flex;
   flex-direction: column;
@@ -5,4 +6,17 @@
   align-items: center;
   height: 100vh;
   width: auto;
+}
+
+.app {
+  background-image: url("./assets/images/appBackground2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.pageTitle {
+  text-align: center;
+  font-family: "Holtwood One SC", serif;
+  font-size: 50px;
+  padding-top: 50px;
 }

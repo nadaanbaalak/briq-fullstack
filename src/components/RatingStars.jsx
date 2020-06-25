@@ -1,5 +1,6 @@
 import React from "react";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
+import "../styles/ratingStar.css";
 
 function RatingStars(props) {
   const { ratingsArray, onRatingChange } = props;
@@ -9,13 +10,13 @@ function RatingStars(props) {
       <StarFilled
         key={index}
         onClick={() => onRatingChange(index)}
-        style={{ fontSize: "30px" }}
+        className="ratingStar"
       />
     ) : (
       <StarOutlined
         key={index}
         onClick={() => onRatingChange(index)}
-        style={{ fontSize: "30px" }}
+        className="ratingStar"
       />
     );
   });
