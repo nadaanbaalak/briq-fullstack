@@ -36,18 +36,19 @@ function addToVocabulary(tfMap, vocabulary) {
   }
 }
 
-function inverseDocumentFrequency(quotesArray, vocabulary) {
+//function to calculate IDF :
+function inverseDocumentFrequency(quotesArray) {
   const idf = {};
-
+  const vocabulary = {};
   //Building the vocabulary to be used for calculating IDF of each word in Vocabulary.
   quotesArray.forEach((quote) => {
-    const { tfMap, wordCount } = termFrequencyMap(quote.en);
+    const { tfMap } = termFrequencyMap(quote.en);
     addToVocabulary(tfMap, vocabulary);
   });
 
   const totalQuotes = quotesArray.length;
 
-  //Calculating IDF for each word from the remaining Quotes.
+  //Calculating IDF for each word in vocabulary from the remaining Quotes.
   for (let key in vocabulary) {
     idf[key] = Math.log(totalQuotes) - Math.log(vocabulary[key]);
   }
@@ -62,6 +63,7 @@ function remainingQuotes(quotesArray, previousQuotes) {
   return remainingQuotes;
 }
 
+//function to calculate the similarity between Quotes represented in form of Vectors
 function cosineSimilarity(quoteVectA, quoteVectB) {
   let dotProduct = 0;
   const vectorSize = quoteVectA.length;
@@ -77,6 +79,7 @@ function cosineSimilarity(quoteVectA, quoteVectB) {
   return similarity;
 }
 
+//function to get TF*IDF vector for a quote
 function tfMapToVector(idf, quote) {
   const { tfMap, wordCount } = termFrequencyMap(quote);
   console.log(wordCount);
@@ -96,25 +99,21 @@ function tfMapToVector(idf, quote) {
   return vector;
 }
 
+//function to get quote similar to current quote
 function getSimilarQuote(currentQuote, allQuotes, previousQuotes) {
-  const vocabulary = {};
-
   const quotesLeft = remainingQuotes(allQuotes, previousQuotes);
-  //console.log("Remaining Qoutes : ", quotesLeft);
-  const idf = inverseDocumentFrequency(quotesLeft, vocabulary);
-  //console.log("Idf : ", idf);
-  const currentQuoteVector = tfMapToVector(idf, currentQuote["en"]);
+  const idf = inverseDocumentFrequency(quotesLeft);
+  const currentQuoteVector = tfMapToVector(idf, currentQuote.en);
   console.log("Current quote Vector : ", currentQuoteVector);
 
   let mostSimilarQuote = {};
-  let mostSimilarQuoteSimilarity = -1;
+  let mostSimilarQuoteSimilarity = 0;
 
   for (let i = 0; i < quotesLeft.length; i++) {
     let quote = quotesLeft[i];
     const quoteVector = tfMapToVector(idf, quote.en);
-    //console.log("Quote Vector : ", quoteVector);
     let currentSimilarity = cosineSimilarity(currentQuoteVector, quoteVector);
-    //console.log(currentSimilarity);
+
     if (currentSimilarity > mostSimilarQuoteSimilarity) {
       mostSimilarQuote = quote;
       mostSimilarQuoteSimilarity = currentSimilarity;
@@ -124,25 +123,25 @@ function getSimilarQuote(currentQuote, allQuotes, previousQuotes) {
   return mostSimilarQuote;
 }
 
+//function to get quote different then current quote
 function getDifferentQuote(currentQuote, allQuotes, previousQuotes) {
-  const vocabulary = {};
-
   const quotesLeft = remainingQuotes(allQuotes, previousQuotes);
-  const idf = inverseDocumentFrequency(quotesLeft, vocabulary);
+  const idf = inverseDocumentFrequency(quotesLeft);
   const currentQuoteVector = tfMapToVector(idf, currentQuote.en);
 
   let mostDifferentQuote = {};
-  let mostDifferentQuoteSimilarity = 0;
+  let mostDifferentQuoteSimilarity = 1;
 
-  quotesLeft.forEach((quote) => {
+  for (let i = 0; i < quotesLeft.length; i++) {
+    let quote = quotesLeft[i];
     const quoteVector = tfMapToVector(idf, quote.en);
-    const currentSimilarity = cosineSimilarity(currentQuoteVector, quoteVector);
+    let currentSimilarity = cosineSimilarity(currentQuoteVector, quoteVector);
 
-    if (currentSimilarity > mostDifferentQuoteSimilarity) {
+    if (currentSimilarity < mostDifferentQuoteSimilarity) {
       mostDifferentQuote = quote;
       mostDifferentQuoteSimilarity = currentSimilarity;
     }
-  });
+  }
 
   return mostDifferentQuote;
 }

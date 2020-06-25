@@ -27,7 +27,6 @@ class App extends Component {
       const { data } = await axios.get(`${baseURL}/quotes/random`);
       const currentQuote = { ...quote };
       const { _id: id, en, author } = data;
-      //console.log(data);
       currentQuote["id"] = id;
       currentQuote["en"] = en;
       currentQuote["author"] = author;
@@ -46,42 +45,36 @@ class App extends Component {
     this.setState({ rating: updatedRating });
   };
 
-  //Handler that runs when user submit's the rating for a quote.
+  //Handler to submit rating and get similar or different quote.
   handleRatingSubmit = async () => {
-    let currentRating = this.state.rating.reduce(
-      (total, value) => total + value,
-      0
-    );
-    this.setState({ isLoading: true });
+    const { rating, quote, baseURL } = this.state;
+
+    let currentRating = rating.reduce((total, value) => total + value, 0);
     if (currentRating === 0) currentRating = 1;
+    this.setState({ isLoading: true });
+
+    //Saving current quote id to previous Quotes array in local storage
     const pastQuotes = JSON.parse(localStorage.getItem("previousQuotes")) || [];
-    pastQuotes.push(this.state.quote["id"]);
+    pastQuotes.push(quote["id"]);
     localStorage.setItem("previousQuotes", JSON.stringify(pastQuotes));
 
     try {
-      await axios.post(`${this.state.baseURL}/quotes/vote`, {
-        quoteId: this.state.quote["id"],
+      //posting user rating for given quote
+      await axios.post(`${baseURL}/quotes/vote`, {
+        quoteId: quote["id"],
         newVote: currentRating,
       });
-      const quotes = await axios.get(`${this.state.baseURL}/quotes`);
-      //console.log(quotes.data);
+
+      const quotes = await axios.get(`${baseURL}/quotes`); //getting all quotes
+
       const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
-      //console.log("Previous Quotes id array : ", previousQuotes);
-      //console.log(inverseDocumentFrequency(quotes.data, {}, previousQuotes));
+
+      //Determining similar or different quote based on User rating
       let nextQuote = {};
       if (currentRating >= 4) {
-        nextQuote = getSimilarQuote(
-          this.state.quote,
-          quotes.data,
-          previousQuotes
-        );
-        console.log(nextQuote);
+        nextQuote = getSimilarQuote(quote, quotes.data, previousQuotes);
       } else {
-        nextQuote = getDifferentQuote(
-          this.state.quote,
-          quotes.data,
-          previousQuotes
-        );
+        nextQuote = getDifferentQuote(quote, quotes.data, previousQuotes);
       }
       this.setState({
         rating: [0, 0, 0, 0, 0],
